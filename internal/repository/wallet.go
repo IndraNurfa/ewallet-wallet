@@ -48,3 +48,11 @@ func (r *WalletRepo) GetWalletTransactionByReference(ctx context.Context, refere
 	err := r.DB.Where("reference", reference).Last(&resp).Error
 	return resp, err
 }
+
+func (r *WalletRepo) GetWalletTransactionByUsersID(ctx context.Context, userID int) (models.Wallet, error) {
+	var (
+		resp models.Wallet
+	)
+	err := r.DB.Where("user_id", userID).Last(&resp).Error
+	return resp, err
+}

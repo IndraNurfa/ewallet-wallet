@@ -21,8 +21,9 @@ func ServeHTTP() {
 
 	walletV1 := r.Group("/wallet/v1")
 	walletV1.POST("/", d.WalletAPI.Create)
-	walletV1.PUT("/credit", d.ValidateToken, d.WalletAPI.CreditBalance)
-	walletV1.PUT("/debit", d.ValidateToken, d.WalletAPI.DebitBalance)
+	walletV1.PUT("/balance/credit", d.ValidateToken, d.WalletAPI.CreditBalance)
+	walletV1.PUT("/balance/debit", d.ValidateToken, d.WalletAPI.DebitBalance)
+	walletV1.GET("/balance", d.ValidateToken, d.WalletAPI.GetBalance)
 
 	err := r.Run(":" + helpers.GetEnv("PORT", "8080"))
 	if err != nil {

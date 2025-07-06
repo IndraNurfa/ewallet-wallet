@@ -12,14 +12,16 @@ import (
 )
 
 func ServeHTTP() {
-	dependency := dependencyInject()
+	d := dependencyInject()
 
 	r := gin.Default()
 
-	r.GET("/health", dependency.HealthcheckApi.HealthcheckHandlerHttp)
+	r.GET("/health", d.HealthcheckApi.HealthcheckHandlerHttp)
 
 	walletV1 := r.Group("/wallet/v1")
-	walletV1.POST("/", dependency.WalletAPI.Create)
+	walletV1.POST("/", d.WalletAPI.Create)
+	walletV1.PUT("/credit", d.ValidateToken, d.WalletAPI.CreditBalance)
+	walletV1.PUT("/")
 
 	err := r.Run(":" + helpers.GetEnv("PORT", "8080"))
 	if err != nil {

@@ -40,5 +40,46 @@ func (api *WalletAPI) Create(c *gin.Context) {
 	}
 
 	helpers.SendResponseHTTP(c, http.StatusCreated, constants.SuccessMessage, req)
+}
 
+func (api *WalletAPI) CreditBalance(c *gin.Context) {
+	var (
+		log = helpers.Logger
+		req models.TransactionRequest
+	)
+
+	if err := c.ShouldBindBodyWithJSON(&req); err != nil {
+		log.Error("failed to parse request: ", err)
+		helpers.SendResponseHTTP(c, http.StatusBadRequest, constants.ErrFailedBadRequest, nil)
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		log.Error("failed to validate request: ", err)
+		helpers.SendResponseHTTP(c, http.StatusBadRequest, constants.ErrFailedBadRequest, nil)
+		return
+	}
+
+	token, ok := c.Get("token")
+	if !ok {
+		log.Error("failed to get token")
+		helpers.SendResponseHTTP(c, http.StatusInternalServerError, constants.ErrServerError, nil)
+		return
+	}
+
+	tokenData, ok := token.(models.TokenData)
+	if !ok {
+		log.Error("failed to parse token data")
+		helpers.SendResponseHTTP(c, http.StatusInternalServerError, constants.ErrServerError, nil)
+		return
+	}
+
+	resp, err := api.WalletService.CreditBalance(c.Request.Context(), int(tokenData.UserID), req)
+	if err != nil {
+		log.Error("failed to create wallet: ", err)
+		helpers.SendResponseHTTP(c, http.StatusInternalServerError, constants.ErrServerError, nil)
+		return
+	}
+
+	helpers.SendResponseHTTP(c, http.StatusCreated, constants.SuccessMessage, resp)
 }

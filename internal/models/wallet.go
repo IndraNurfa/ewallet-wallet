@@ -25,7 +25,7 @@ func (l Wallet) Validate() error {
 
 type WalletTransaction struct {
 	ID                    int
-	WalletID              int       `gorm:"uniqueIndex;column:wallet_id;not null"`
+	WalletID              int       `gorm:"column:wallet_id;not null"`
 	Amount                float64   `gorm:"column:amount;type:decimal(15,2);not null"`
 	WalletTransactionType string    `gorm:"column:wallet_transaction_type;type:ENUM('CREDIT','DEBIT');not null"`
 	Reference             string    `gorm:"uniqueIndex;column:reference;type:varchar(100);not null"`

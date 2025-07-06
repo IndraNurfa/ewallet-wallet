@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	"github.com/go-playground/validator/v10"
 )
 
 type Wallet struct {
@@ -18,11 +16,6 @@ func (*Wallet) TableName() string {
 	return "wallets"
 }
 
-func (l Wallet) Validate() error {
-	v := validator.New()
-	return v.Struct(l)
-}
-
 type WalletTransaction struct {
 	ID                    int
 	WalletID              int       `gorm:"column:wallet_id;not null"`
@@ -35,9 +28,4 @@ type WalletTransaction struct {
 
 func (*WalletTransaction) TableName() string {
 	return "wallet_transactions"
-}
-
-func (l WalletTransaction) Validate() error {
-	v := validator.New()
-	return v.Struct(l)
 }

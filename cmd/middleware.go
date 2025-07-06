@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"ewallet-wallet/external"
 	"ewallet-wallet/helpers"
 	"net/http"
 
@@ -19,7 +18,7 @@ func (d *Dependency) ValidateToken(c *gin.Context) {
 		return
 	}
 
-	tokenData, err := external.ValidateToken(c.Request.Context(), auth)
+	tokenData, err := d.External.ValidateToken(c.Request.Context(), auth)
 	if err != nil {
 		log.Error(err)
 		helpers.SendResponseHTTP(c, http.StatusUnauthorized, "unauthorized empty", nil)

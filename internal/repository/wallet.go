@@ -56,3 +56,15 @@ func (r *WalletRepo) GetWalletTransactionByUsersID(ctx context.Context, userID i
 	err := r.DB.Where("user_id", userID).Last(&resp).Error
 	return resp, err
 }
+
+func (r *WalletRepo) GetWalletHistory(ctx context.Context, walletID, offset, limit int, transactionType string) ([]models.WalletTransaction, error) {
+	var (
+		resp []models.WalletTransaction
+	)
+	sql := r.DB
+	if transactionType != "" {
+		sql = sql.Where("wallet_transaction_type = ?", transactionType)
+	}
+	err := sql.Limit(limit).Offset(offset).Order("id DESC").Find(&resp).Error
+	return resp, err
+}

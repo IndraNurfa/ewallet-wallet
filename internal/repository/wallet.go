@@ -63,7 +63,7 @@ func (r *WalletRepo) GetWalletHistory(ctx context.Context, walletID, offset, lim
 	)
 	sql := r.DB
 	if transactionType != "" {
-		sql = sql.Where("wallet_transaction_type = ?", transactionType)
+		sql = sql.Where("wallet_transaction_type = ? AND wallet_id = ?", transactionType, walletID)
 	}
 	err := sql.Limit(limit).Offset(offset).Order("id DESC").Find(&resp).Error
 	return resp, err
